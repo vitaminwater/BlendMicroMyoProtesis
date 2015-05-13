@@ -9,6 +9,11 @@
 import Foundation
 import CoreBluetooth
 
+
+/**
+ * The big delegate
+ */
+
 class CCBTCentralDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, MyoDelegate {
     
     var peripheral:CBPeripheral!
@@ -28,6 +33,10 @@ class CCBTCentralDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             abort()
         }
     }
+    
+    /**
+     * CBCentralManagerDelegate methods
+     */
     
     func centralManagerDidUpdateState(central: CBCentralManager!) {
         if (central.state == CBCentralManagerState.PoweredOn) {
@@ -49,6 +58,7 @@ class CCBTCentralDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         self.peripheral = nil
         self.service = nil
         self.characteristic = nil
+        central.scanForPeripheralsWithServices(nil, options: nil)
     }
     
     func centralManager(central: CBCentralManager!, didDiscoverPeripheral peripheral: CBPeripheral!, advertisementData: [NSObject : AnyObject]!, RSSI: NSNumber!) {
@@ -61,6 +71,10 @@ class CCBTCentralDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             self.peripheral.delegate = self
         }
     }
+    
+    /**
+    * CBPeripheralDelegate methods
+    */
     
     func peripheral(peripheral: CBPeripheral!, didDiscoverServices error: NSError!) {
         if service != nil {
@@ -90,6 +104,10 @@ class CCBTCentralDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             }
         }
     }
+    
+    /**
+    * MyoDelegate methods
+    */
     
     func myoOnLock(myo: Myo!, timestamp: UInt64) {
         NSLog("myo on lock")
@@ -132,6 +150,10 @@ class CCBTCentralDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
 }
 
+/**
+ * NSRunLoop keep alive timer.
+ */
+
 class MainLoop: NSObject {
     
     var centralManager:CBCentralManager!
@@ -148,6 +170,10 @@ class MainLoop: NSObject {
     }
     
 }
+
+/**
+ * main function
+ */
 
 var mainLoop:MainLoop = MainLoop()
 
